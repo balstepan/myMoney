@@ -2,8 +2,11 @@ from datetime import datetime, timedelta
 
 from django.shortcuts import render, get_object_or_404
 from django.views import View
+from django.contrib.auth.models import User
+from pytils.translit import slugify
 
 from . import models
+from . import forms
 
 
 class AllCostCategories(View):
@@ -45,3 +48,23 @@ class CostCategory(View):
                       {'category': category,
                        'children': children,
                        'costs': costs})
+
+
+class CreateCostCategory(View):
+    def get(self, request):
+        cost_category_form = forms.CostCategoryForm()
+        return render(request,
+                      'costCategories/create.html',
+                      {'form': cost_category_form})
+
+    def post(self, request):
+        cost_category_form = forms.CostCategoryForm(request.POST)
+        if cost_category_form.is_valid():
+            new_category = cost_category_form.save(commit=False)
+            new_category.user = request.user
+            new_category.slug = slugify(new_category.name)
+            new_category.color = 'green'
+            new_category.save()
+            return render(request,
+                          'costCategories/costcategory_detail.html',
+                          {'category': new_category})
