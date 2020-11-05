@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}
+Category {{ category.name }}
+{% endblock %}
+
+{% block content %}
+    <h1>Category {{ category.name }}</h1>
+    {% if children %}
+    <h2>Child categories:</h2>
+    <ul>
+        {% for child in children %}
+            <li>
+                <a href="{{ child.get_absolute_url }}">{{ child.name }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% if costs %}
+    <h2>Costs</h2>
+    {% for cost in costs %}
+        <p>
+            {{ cost.value }} {{ cost.currency }} {{ cost.note }} {{ cost.created_at }}
+        </p>
+    {% endfor %}
+    {% else %}
+        <p>No costs</p>
+    {% endif %}
+{% endblock %}

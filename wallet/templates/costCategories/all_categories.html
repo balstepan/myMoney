@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}
+Categories list
+{% endblock %}
+
+{% block content %}
+    <h1>My CostCategories</h1>
+
+    {% for cat, amount in categories %}
+        <h2>
+            <a href="{{ cat.get_absolute_url }}">{{ cat.name }}</a>
+        </h2>
+        <p>
+            Amount: {{ amount }}.
+        </p>
+    {% endfor %}
+{% endblock %}
