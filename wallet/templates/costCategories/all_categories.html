@@ -5,14 +5,20 @@ Categories list
 {% endblock %}
 
 {% block content %}
-    <h1>My CostCategories</h1>
 
+    <div class="my-3 p-3 bg-white rounded shadow-sm">
+    <h6 class="border-bottom border-gray pb-2 mb-0">Cost categories</h6>
     {% for cat, amount in categories %}
-        <h2>
-            <a href="{{ cat.get_absolute_url }}">{{ cat.name }}</a>
-        </h2>
-        <p>
-            Amount: {{ amount }}.
-        </p>
+    <div class="media text-muted pt-3">
+      <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+        <strong class="d-block text-gray-dark"><a href="{{ cat.get_absolute_url }}">{{ cat.name }}</a></strong>
+        Amount: {{ amount }}.
+      </p>
+    </div>
     {% endfor %}
+
+    <small class="d-block text-right mt-3">
+      <a href="#">All updates</a>
+    </small>
+  </div>
 {% endblock %}

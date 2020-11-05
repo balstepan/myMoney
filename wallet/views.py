@@ -35,10 +35,11 @@ class AllCostCategories(View):
 
 class CostCategory(View):
 
-    def get(self, request, slug, days=30):
-        category = get_object_or_404(models.CostCategory, slug=slug)
+    def get(self, request, user_id, slug, days=30):
+        category = get_object_or_404(models.CostCategory, slug=slug,
+                                     user=get_object_or_404(models.User, pk=user_id))
         children = category.children.all()
-        costs = category.costs.filter(created_at__gt=datetime.now()-timedelta(days=days))
+        costs = category.costs.filter(created_at__gt=datetime.now()-timedelta(days=days)).order_by('-created_at')
         return render(request,
                       'costCategories/costcategory_detail.html',
                       {'category': category,

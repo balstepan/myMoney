@@ -4,12 +4,23 @@
 {% bootstrap_javascript %}
 
 <!DOCTYPE html>
-<html lang="en">
+<html class="h-100 no-touch" lang="en">
 <head>
     <meta charset="UTF-8">
     <title>{% block title %} DEFAULT TITLE {% endblock %}</title>
 </head>
-<body>
+<body class="d-flex flex-column h-100">
+
+<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
+  <h5 class="my-0 mr-md-auto font-weight-normal">My Money</h5>
+  <nav class="my-2 my-md-0 mr-md-3">
+    <a class="p-2 text-dark" href="#">Features</a>
+    <a class="p-2 text-dark" href="#">Enterprise</a>
+    <a class="p-2 text-dark" href="#">Support</a>
+    <a class="p-2 text-dark" href="#">Pricing</a>
+  </nav>
+  <a class="btn btn-outline-primary" href="#">Sign up</a>
+</div>
 
 {#<header>#}
 {#    {% if request.user.is_authenticated %}#}
@@ -25,11 +36,10 @@
 <div class="container-flex m-4">
     <div class="row mb-1">
        <div class="col-sm-9 px-sm-0 pl-sm-1">
-            <div class="p-3 border border-primary rounded">
+            <div class="p-2 border border-primary rounded">
                 {% block content %}
                 {% endblock %}
             </div>
-
        </div>
        <div class="col-sm-3 pr-sm-0 pl-sm-1">
            <div class="p-3 border border-primary rounded">
@@ -39,15 +49,11 @@
        </div>
     </div>
 
-    <div class="row">
-       <div class="col-sm-9 border border-primary rounded">
-            Stepan B
-       </div>
-       <div class="col-sm-3 border border-primary rounded">
-            Python Web development
-       </div>
-    </div>
 </div>
-
+<footer class="footer mt-auto py-3">
+  <div class="container">
+    <span class="text-muted">Stepan B. Python Web Development</span>
+  </div>
+</footer>
 </body>
 </html>

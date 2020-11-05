@@ -5,25 +5,54 @@ Category {{ category.name }}
 {% endblock %}
 
 {% block content %}
-    <h1>Category {{ category.name }}</h1>
+    <div class="d-flex align-items-center p-3 my-3 text-black bg-purple rounded shadow-sm">
+        <div class="lh-100">
+          <h6 class="mb-0 text-black lh-100">{{ category.name }}</h6>
+        </div>
+    </div>
+
     {% if children %}
-    <h2>Child categories:</h2>
-    <ul>
-        {% for child in children %}
-            <li>
-                <a href="{{ child.get_absolute_url }}">{{ child.name }}</a>
-            </li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    {% if costs %}
-    <h2>Costs</h2>
-    {% for cost in costs %}
-        <p>
-            {{ cost.value }} {{ cost.currency }} {{ cost.note }} {{ cost.created_at }}
-        </p>
+    <div class="my-3 p-3 bg-white rounded shadow-sm">
+    <h6 class="border-bottom border-gray text-black-50 pb-2 mb-0">Child categories</h6>
+    {% for child in children %}
+        <div class="media text-muted pt-3">
+            <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+            <strong class="d-block text-gray-dark"><a href="{{ child.get_absolute_url }}">{{ child.name }}</a></strong>
+            </p>
+        </div>
     {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if costs %}
+    <div class="my-3 p-3 bg-white rounded shadow-sm">
+    <h6 class="border-bottom border-gray text-black-50 pb-2 mb-0">Costs</h6>
+    <table class="table">
+      <thead class="thead-light">
+        <tr>
+          <th scope="col">Date</th>
+          <th scope="col">Note</th>
+          <th scope="col">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for cost in costs %}
+          <tr>
+              <th scope="row">{{ cost.created_at|date:"j E Y" }}</th>
+              <td>{{ cost.note }}</td>
+              <td>{{ cost.value }} {{ cost.currency }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </div>
     {% else %}
-        <p>No costs</p>
+        <div class="my-3 p-3 bg-white rounded shadow-sm">
+            <div class="media text-muted pt-3">
+                <p class="media-body pb-3 mb-0 small lh-125 border-gray">
+                <strong class="d-block text-gray-dark">No costs</strong>
+                </p>
+            </div>
+        </div>
     {% endif %}
 {% endblock %}

@@ -52,7 +52,7 @@ class CostCategory(models.Model):
 
     def get_absolute_url(self):
         return reverse('wallet:costcategory_details',
-                       args=[self.slug])
+                       args=[self.user.pk, self.slug])
 
 
 class Cost(models.Model):
