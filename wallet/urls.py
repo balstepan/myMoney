@@ -10,4 +10,5 @@ urlpatterns = [
          views.CostCategory.as_view(),
          name='costcategory_details'),
     path('costcategory/create/', views.CreateCostCategory.as_view(), name='costcategory_create'),
+    path('cost/create/', views.Cost.as_view(), name='cost_create'),
     ]

@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from django.contrib.auth.models import User
 from pytils.translit import slugify
@@ -68,3 +68,23 @@ class CreateCostCategory(View):
             return render(request,
                           'costCategories/costcategory_detail.html',
                           {'category': new_category})
+
+
+class Cost(View):
+    def get(self, request):
+        cost_form = forms.CostForm()
+        return render(request,
+                      'costs/create.html',
+                      {'form': cost_form})
+
+    def post(self, request):
+        cost_form = forms.CostForm(request.POST)
+        if cost_form.is_valid():
+            new_cost = cost_form.save(commit=False)
+            new_cost.user = request.user
+            new_cost.account.balance -= new_cost.value
+            new_cost.save()
+            new_cost.account.save()
+            return redirect(new_cost.category,
+                            user_id=new_cost.user.pk,
+                            slug=new_cost.category.slug)
