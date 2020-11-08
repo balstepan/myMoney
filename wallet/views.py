@@ -155,21 +155,43 @@ class CreateIncomeCategory(View):
 
 
 class Cost(View):
-    def get(self, request):
-        cost_form = forms.CostForm()
+    def get(self, request, cost_id=None):
+        if cost_id:
+            cost = models.Cost.objects.get(pk=cost_id)
+            cost_form = forms.CostForm(instance=cost)
+        else:
+            cost_form = forms.CostForm()
         return render(request,
                       'costs/create.html',
                       {'form': cost_form})
 
-    def post(self, request):
-        cost_form = forms.CostForm(request.POST)
-        if cost_form.is_valid():
-            new_cost = cost_form.save(commit=False)
-            new_cost.user = request.user
-            new_cost.account.balance -= new_cost.value
-            new_cost.save()
-            new_cost.account.save()
-            return redirect(new_cost.category,
+    def post(self, request, cost_id=None):
+        if not cost_id:
+            cost_form = forms.CostForm(request.POST)
+            if cost_form.is_valid():
+                new_cost = cost_form.save(commit=False)
+                new_cost.user = request.user
+                new_cost.account.balance -= new_cost.value
+                new_cost.save()
+                new_cost.account.save()
+        else:
+            cost = models.Cost.objects.get(pk=cost_id)
+            old_value = cost.value
+            old_account = cost.account
+            cost_form = forms.CostForm(request.POST, instance=cost)
+            if cost_form.is_valid():
+                new_cost = cost_form.save(commit=False)
+                new_cost.user = request.user
+                if old_account == new_cost.account:
+                    new_cost.account.balance += old_value
+                    old_account.save()
+                else:
+                    old_account.balance += old_value
+                    old_account.save()
+                new_cost.account.balance -= new_cost.value
+                new_cost.save()
+                new_cost.account.save()
+        return redirect(new_cost.category,
                             user_id=new_cost.user.pk,
                             slug=new_cost.category.slug)
 

@@ -39,7 +39,7 @@ Category {{ category.name }}
         {% for cost in costs %}
           <tr>
               <th scope="row">{{ cost.created_at|date:"j E Y" }}</th>
-              <td>{{ cost.note }}</td>
+              <td><a href="{% url 'wallet:cost_edit' cost_id=cost.pk %}">{{ cost.note }}</a></td>
               <td>{{ cost.value }} {{ cost.currency }}</td>
           </tr>
         {% endfor %}
