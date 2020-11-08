@@ -35,23 +35,24 @@
 
 <div class="container-flex m-4">
     <div class="row mb-1">
-       <div class="col-sm-9 px-sm-0 pl-sm-1">
-            <div class="p-2 border border-primary rounded">
+       <div class="col-sm-10 px-sm-0 pl-sm-1">
+            <div class="p-2">
                 {% block content %}
                 {% endblock %}
             </div>
        </div>
-       <div class="col-sm-3 pr-sm-0 pl-sm-1">
-           <div class="p-3 border border-primary rounded">
+       <div class="col-sm-2 pr-sm-0 pl-sm-1">
+           <div class="p-3">
                 {% block menu %}
-                    <a href="{% url 'wallet:all_cost_categories' %}">Main page</a><br><br>
-                    <a href="{% url 'wallet:all_accounts' %}">Accounts</a><br><br>
-                    <strong>Categories:</strong><br>
-                    <a href="{% url 'wallet:all_cost_categories' %}">Cost</a><br>
-                    <a href="{% url 'wallet:all_income_categories' %}">Income</a><br>
-                    <br>
-                    <a href="{% url 'wallet:cost_create' %}">New cost</a><br>
-                    <a href="{% url 'wallet:income_create' %}">New income</a>
+                    <div class="p-3 mb-2 bg-light"><a href="{% url 'wallet:all_cost_categories' %}">Main page</a><br><br>
+                        <a href="{% url 'wallet:all_accounts' %}">Accounts</a><br><br>
+                        <strong>Categories:</strong><br>
+                        <a href="{% url 'wallet:all_cost_categories' %}">Cost</a><br>
+                        <a href="{% url 'wallet:all_income_categories' %}">Income</a><br>
+                        <br>
+                        <a href="{% url 'wallet:cost_create' %}">New cost</a><br>
+                        <a href="{% url 'wallet:income_create' %}">New income</a>
+                    </div>
                 {% endblock %}
             </div>
        </div>
