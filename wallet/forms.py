@@ -3,6 +3,12 @@ from . import models
 from django.contrib.auth.models import User
 
 
+class AccountForm(forms.ModelForm):
+    class Meta:
+        model = models.Account
+        fields = ('name', 'balance', 'currency')
+
+
 class CostCategoryForm(forms.ModelForm):
     class Meta:
         model = models.CostCategory

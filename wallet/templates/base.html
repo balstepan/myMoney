@@ -45,7 +45,9 @@
            <div class="p-3 border border-primary rounded">
                 {% block menu %}
                     <a href="{% url 'wallet:all_cost_categories' %}">Main page</a><br><br>
+                    <a href="{% url 'wallet:all_accounts' %}">Accounts</a><br><br>
                     <strong>Categories:</strong><br>
+                    <a href="{% url 'wallet:all_cost_categories' %}">Cost</a><br>
                     <a href="{% url 'wallet:all_income_categories' %}">Income</a><br>
                     <br>
                     <a href="{% url 'wallet:cost_create' %}">New cost</a><br>

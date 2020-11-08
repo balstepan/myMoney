@@ -9,6 +9,43 @@ from . import models
 from . import forms
 
 
+class AllAccounts(View):
+
+    def get(self, request, days=30):
+        accounts = models.Account.objects.filter(user=request.user)
+        return render(request,
+                      'accounts/all_accounts.html',
+                      {'accounts': accounts})
+
+
+class AccountDetail(View):
+
+    def get(self, request, user_id, slug):
+        account = get_object_or_404(models.Account, slug=slug,
+                                     user=get_object_or_404(models.User, pk=user_id))
+        return render(request,
+                      'accounts/account_detail.html',
+                      {'account': account})
+
+class Account(View):
+    def get(self, request):
+        account_form = forms.AccountForm()
+        return render(request,
+                      'accounts/create.html',
+                      {'form': account_form})
+
+    def post(self, request):
+        account_form = forms.AccountForm(request.POST)
+        if account_form.is_valid():
+            new_account = account_form.save(commit=False)
+            new_account.user = request.user
+            new_account.slug = slugify(new_account.name)
+            new_account.save()
+            return redirect(new_account,
+                            user_id=new_account.user.pk,
+                            slug=new_account.slug)
+
+
 class AllCostCategories(View):
 
     def _get_all_children(self, parent_cat):

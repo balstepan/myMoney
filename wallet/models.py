@@ -13,6 +13,7 @@ CURRENCIES = (
 
 class Account(models.Model):
     name = models.CharField(verbose_name='Name', max_length=80)
+    slug = models.SlugField(max_length=80)
     balance = models.DecimalField(verbose_name='Balance',
                                   max_digits=10,
                                   decimal_places=2)
@@ -26,6 +27,10 @@ class Account(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('wallet:account_details',
+                       args=[self.user.pk, self.slug])
 
 
 class CostCategory(models.Model):
