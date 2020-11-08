@@ -13,3 +13,9 @@ class CostForm(forms.ModelForm):
     class Meta:
         model = models.Cost
         fields = ('category', 'note', 'value', 'currency', 'account')
+
+
+class IncomeForm(forms.ModelForm):
+    class Meta:
+        model = models.Income
+        fields = ('category', 'note', 'value', 'currency', 'account')

@@ -9,6 +9,10 @@ urlpatterns = [
     path('<int:user_id>/costcategory/<slug:slug>/',
          views.CostCategory.as_view(),
          name='costcategory_details'),
+    path('<int:user_id>/incomecategory/<slug:slug>/',
+         views.IncomeCategory.as_view(),
+         name='incomecategory_details'),
     path('costcategory/create/', views.CreateCostCategory.as_view(), name='costcategory_create'),
     path('cost/create/', views.Cost.as_view(), name='cost_create'),
+    path('income/create/', views.Income.as_view(), name='income_create'),
     ]

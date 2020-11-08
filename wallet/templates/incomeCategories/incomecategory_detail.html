@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}
+Category {{ category.name }}
+{% endblock %}
+
+{% block content %}
+    <div class="d-flex align-items-center p-3 my-3 text-black bg-purple rounded shadow-sm">
+        <div class="lh-100">
+          <h6 class="mb-0 text-black lh-100">{{ category.name }}</h6>
+        </div>
+    </div>
+
+    {% if incomes %}
+    <div class="my-3 p-3 bg-white rounded shadow-sm">
+    <h6 class="border-bottom border-gray text-black-50 pb-2 mb-0">Incomes</h6>
+    <table class="table">
+      <thead class="thead-light">
+        <tr>
+          <th scope="col">Date</th>
+          <th scope="col">Note</th>
+          <th scope="col">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for income in incomes %}
+          <tr>
+              <th scope="row">{{ income.created_at|date:"j E Y" }}</th>
+              <td>{{ income.note }}</td>
+              <td>{{ income.value }} {{ income.currency }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </div>
+    {% else %}
+        <div class="my-3 p-3 bg-white rounded shadow-sm">
+            <div class="media text-muted pt-3">
+                <p class="media-body pb-3 mb-0 small lh-125 border-gray">
+                <strong class="d-block text-gray-dark">No incomes</strong>
+                </p>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

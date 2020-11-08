@@ -102,8 +102,8 @@ class IncomeCategory(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('wallet:income_category_details',
-                       args=[self.id])
+        return reverse('wallet:incomecategory_details',
+                       args=[self.user.pk, self.slug])
 
 
 class Income(models.Model):

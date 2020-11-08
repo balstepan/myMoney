@@ -70,6 +70,18 @@ class CreateCostCategory(View):
                           {'category': new_category})
 
 
+class IncomeCategory(View):
+
+    def get(self, request, user_id, slug, days=30):
+        category = get_object_or_404(models.IncomeCategory, slug=slug,
+                                     user=get_object_or_404(models.User, pk=user_id))
+        incomes = category.incomes.filter(created_at__gt=datetime.now()-timedelta(days=days)).order_by('-created_at')
+        return render(request,
+                      'incomeCategories/incomecategory_detail.html',
+                      {'category': category,
+                       'incomes': incomes})
+
+
 class Cost(View):
     def get(self, request):
         cost_form = forms.CostForm()
@@ -88,3 +100,23 @@ class Cost(View):
             return redirect(new_cost.category,
                             user_id=new_cost.user.pk,
                             slug=new_cost.category.slug)
+
+
+class Income(View):
+    def get(self, request):
+        income_form = forms.IncomeForm()
+        return render(request,
+                      'incomes/create.html',
+                      {'form': income_form})
+
+    def post(self, request):
+        income_form = forms.IncomeForm(request.POST)
+        if income_form.is_valid():
+            new_income = income_form.save(commit=False)
+            new_income.user = request.user
+            new_income.account.balance += new_income.value
+            new_income.save()
+            new_income.account.save()
+            return redirect(new_income.category,
+                            user_id=new_income.user.pk,
+                            slug=new_income.category.slug)
