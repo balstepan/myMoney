@@ -9,6 +9,12 @@ class CostCategoryForm(forms.ModelForm):
         fields = ('name', 'parent')
 
 
+class IncomeCategoryForm(forms.ModelForm):
+    class Meta:
+        model = models.IncomeCategory
+        fields = ('name',)
+
+
 class CostForm(forms.ModelForm):
     class Meta:
         model = models.Cost

@@ -70,6 +70,21 @@ class CreateCostCategory(View):
                           {'category': new_category})
 
 
+class AllIncomeCategories(View):
+
+    def get(self, request, days=30):
+        income_categories_list = models.IncomeCategory.objects.filter(user=request.user)
+        amounts = []
+        for cat in income_categories_list:
+            incomes = cat.incomes.filter(created_at__gt=datetime.now()-timedelta(days=days))
+            amount = sum(income.value for income in incomes)
+            amounts.append(amount)
+        context = zip(income_categories_list, amounts)
+        return render(request,
+                      'incomeCategories/all_categories.html',
+                      {'categories': context})
+
+
 class IncomeCategory(View):
 
     def get(self, request, user_id, slug, days=30):
@@ -80,6 +95,26 @@ class IncomeCategory(View):
                       'incomeCategories/incomecategory_detail.html',
                       {'category': category,
                        'incomes': incomes})
+
+
+class CreateIncomeCategory(View):
+    def get(self, request):
+        income_category_form = forms.IncomeCategoryForm()
+        return render(request,
+                      'incomeCategories/create.html',
+                      {'form': income_category_form})
+
+    def post(self, request):
+        income_category_form = forms.IncomeCategoryForm(request.POST)
+        if income_category_form.is_valid():
+            new_category = income_category_form.save(commit=False)
+            new_category.user = request.user
+            new_category.slug = slugify(new_category.name)
+            new_category.color = 'green'
+            new_category.save()
+            return render(request,
+                          'incomeCategories/incomecategory_detail.html',
+                          {'category': new_category})
 
 
 class Cost(View):
