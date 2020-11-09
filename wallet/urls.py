@@ -23,4 +23,5 @@ urlpatterns = [
     path('income/create/', views.Income.as_view(), name='income_create'),
     path('account/create/', views.Account.as_view(), name='account_create'),
     path('cost/<int:cost_id>/', views.Cost.as_view(), name='cost_edit'),
+    path('income/<int:income_id>/', views.Income.as_view(), name='income_edit'),
     ]

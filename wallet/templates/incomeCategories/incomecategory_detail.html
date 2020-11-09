@@ -26,7 +26,7 @@ Category {{ category.name }}
         {% for income in incomes %}
           <tr>
               <th scope="row">{{ income.created_at|date:"j E Y" }}</th>
-              <td>{{ income.note }}</td>
+              <td><a href="{% url 'wallet:income_edit' income_id=income.pk %}">{{ income.note }}</a></td>
               <td>{{ income.value }} {{ income.currency }}</td>
           </tr>
         {% endfor %}

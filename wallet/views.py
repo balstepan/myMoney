@@ -197,20 +197,42 @@ class Cost(View):
 
 
 class Income(View):
-    def get(self, request):
-        income_form = forms.IncomeForm()
+    def get(self, request, income_id=None):
+        if income_id:
+            income = models.Income.objects.get(pk=income_id)
+            income_form = forms.IncomeForm(instance=income)
+        else:
+            income_form = forms.IncomeForm()
         return render(request,
                       'incomes/create.html',
                       {'form': income_form})
 
-    def post(self, request):
-        income_form = forms.IncomeForm(request.POST)
-        if income_form.is_valid():
-            new_income = income_form.save(commit=False)
-            new_income.user = request.user
-            new_income.account.balance += new_income.value
-            new_income.save()
-            new_income.account.save()
-            return redirect(new_income.category,
+    def post(self, request, income_id=None):
+        if not income_id:
+            income_form = forms.IncomeForm(request.POST)
+            if income_form.is_valid():
+                new_income = income_form.save(commit=False)
+                new_income.user = request.user
+                new_income.account.balance += new_income.value
+                new_income.save()
+                new_income.account.save()
+        else:
+            income = models.Income.objects.get(pk=income_id)
+            old_value = income.value
+            old_account = income.account
+            income_form = forms.IncomeForm(request.POST, instance=income)
+            if income_form.is_valid():
+                new_income = income_form.save(commit=False)
+                new_income.user = request.user
+                if old_account == new_income.account:
+                    new_income.account.balance -= old_value
+                    old_account.save()
+                else:
+                    old_account.balance -= old_value
+                    old_account.save()
+                new_income.account.balance += new_income.value
+                new_income.save()
+                new_income.account.save()
+        return redirect(new_income.category,
                             user_id=new_income.user.pk,
                             slug=new_income.category.slug)
