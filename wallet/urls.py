@@ -21,7 +21,7 @@ urlpatterns = [
     path('incomecategory/create/', views.CreateIncomeCategory.as_view(), name='incomecategory_create'),
     path('cost/create/', views.Cost.as_view(), name='cost_create'),
     path('income/create/', views.Income.as_view(), name='income_create'),
-    path('account/create/', views.Account.as_view(), name='account_create'),
+    path('account/create/', views.AccountDetail.as_view(), name='account_create'),
     path('cost/<int:cost_id>/', views.Cost.as_view(), name='cost_edit'),
     path('income/<int:income_id>/', views.Income.as_view(), name='income_edit'),
     ]
