@@ -195,10 +195,12 @@ class Cost(View):
                 new_cost.user = request.user
                 if old_account == new_cost.account:
                     new_cost.account.balance += old_value
-                    old_account.save()
+                    if old_account:
+                        old_account.save()
                 else:
-                    old_account.balance += old_value
-                    old_account.save()
+                    if old_account:
+                        old_account.balance += old_value
+                        old_account.save()
                 new_cost.account.balance -= new_cost.value
                 new_cost.save()
                 new_cost.account.save()
@@ -254,13 +256,32 @@ class Income(View):
                 new_income.user = request.user
                 if old_account == new_income.account:
                     new_income.account.balance -= old_value
-                    old_account.save()
+                    if old_account:
+                        old_account.save()
                 else:
-                    old_account.balance -= old_value
-                    old_account.save()
+                    if old_account:
+                        old_account.balance -= old_value
+                        old_account.save()
                 new_income.account.balance += new_income.value
                 new_income.save()
                 new_income.account.save()
         return redirect(new_income.category,
                             user_id=new_income.user.pk,
                             slug=new_income.category.slug)
+
+
+def income_delete(request, income_id):
+    income = get_object_or_404(models.Income, id=income_id)
+
+    if request.method == "POST":
+        income.account.balance -= income.value
+        income.account.save()
+        income.delete()
+        return redirect("wallet:incomecategory_details",
+                        user_id=request.user.id,
+                        slug=income.category.slug)
+    else:
+        return render(request,
+                      'delete.html',
+                      {'obj_type': 'income',
+                       'object': income})
