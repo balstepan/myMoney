@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block title %} Delete {{ obj_type }} {% endblock %}
+
+{% block content %}
+    <div class="my-3 p-3 bg-white rounded shadow-sm">
+    <h4 class="border-bottom border-gray pb-2 mb-0">Delete {{ obj_type }}</h4>
+    <form action="." method="post">
+        <p>Are you sure you want to delete {{ obj_type }} "{{ object }}"?</p>
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
+    </div>
+{% endblock %}

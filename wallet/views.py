@@ -3,6 +3,8 @@ from datetime import datetime, timedelta
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from django.contrib.auth.models import User
+from django.views.generic.edit import DeleteView
+from django.urls import reverse_lazy
 from pytils.translit import slugify
 
 from . import models
@@ -42,6 +44,19 @@ class AccountDetail(View):
             new_account.slug = slugify(new_account.name)
             new_account.save()
         return redirect('wallet:all_accounts')
+
+
+def account_delete(request, acc_id):
+    account = get_object_or_404(models.Account, id=acc_id)
+
+    if request.method == "POST":
+        account.delete()
+        return redirect("wallet:all_accounts")
+    else:
+        return render(request,
+                      'delete.html',
+                      {'obj_type': 'account',
+                       'object': account})
 
 
 class AllCostCategories(View):
