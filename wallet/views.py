@@ -3,8 +3,6 @@ from datetime import datetime, timedelta
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from django.contrib.auth.models import User
-from django.views.generic.edit import DeleteView
-from django.urls import reverse_lazy
 from pytils.translit import slugify
 
 from . import models
@@ -207,6 +205,23 @@ class Cost(View):
         return redirect(new_cost.category,
                             user_id=new_cost.user.pk,
                             slug=new_cost.category.slug)
+
+
+def cost_delete(request, cost_id):
+    cost = get_object_or_404(models.Cost, id=cost_id)
+
+    if request.method == "POST":
+        cost.account.balance += cost.value
+        cost.account.save()
+        cost.delete()
+        return redirect("wallet:costcategory_details",
+                        user_id=request.user.id,
+                        slug=cost.category.slug)
+    else:
+        return render(request,
+                      'delete.html',
+                      {'obj_type': 'cost',
+                       'object': cost})
 
 
 class Income(View):
