@@ -7,7 +7,7 @@ Category {{ category.name }}
 {% block content %}
     <div class="d-flex align-items-center p-3 my-3 text-black bg-purple rounded shadow-sm">
         <div class="lh-100">
-          <h6 class="mb-0 text-black lh-100">{{ category.name }}</h6>
+          <h4 class="mb-0 text-black lh-100">{{ category.name }}</h4>
         </div>
     </div>
 
@@ -45,6 +45,9 @@ Category {{ category.name }}
         {% endfor %}
       </tbody>
     </table>
+    <small class="d-block text-right mt-3">
+        <a href="{% url 'wallet:cost_create' %}"><button type="button" class="btn btn-primary btn-sm">Add cost</button></a>
+    </small>
     </div>
     {% else %}
         <div class="my-3 p-3 bg-white rounded shadow-sm">
@@ -53,6 +56,9 @@ Category {{ category.name }}
                 <strong class="d-block text-gray-dark">No costs</strong>
                 </p>
             </div>
+            <small class="d-block text-right mt-3">
+                <a href="{% url 'wallet:cost_create' %}"><button type="button" class="btn btn-primary btn-sm">Add cost</button></a>
+            </small>
         </div>
     {% endif %}
 {% endblock %}

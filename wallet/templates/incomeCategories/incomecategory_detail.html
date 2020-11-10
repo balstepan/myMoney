@@ -13,7 +13,7 @@ Category {{ category.name }}
 
     {% if incomes %}
     <div class="my-3 p-3 bg-white rounded shadow-sm">
-    <h6 class="border-bottom border-gray text-black-50 pb-2 mb-0">Incomes</h6>
+    <h4 class="border-bottom border-gray text-black-50 pb-2 mb-0">Incomes</h4>
     <table class="table">
       <thead class="thead-light">
         <tr>
@@ -32,6 +32,9 @@ Category {{ category.name }}
         {% endfor %}
       </tbody>
     </table>
+    <small class="d-block text-right mt-3">
+        <a href="{% url 'wallet:income_create' %}"><button type="button" class="btn btn-primary btn-sm">Add income</button></a>
+    </small>
     </div>
     {% else %}
         <div class="my-3 p-3 bg-white rounded shadow-sm">
@@ -40,6 +43,9 @@ Category {{ category.name }}
                 <strong class="d-block text-gray-dark">No incomes</strong>
                 </p>
             </div>
+        <small class="d-block text-right mt-3">
+            <a href="{% url 'wallet:income_create' %}"><button type="button" class="btn btn-primary btn-sm">Add income</button></a>
+        </small>
         </div>
     {% endif %}
 {% endblock %}

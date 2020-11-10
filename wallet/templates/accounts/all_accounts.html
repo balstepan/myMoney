@@ -7,7 +7,7 @@ Accounts list
 {% block content %}
 
     <div class="my-3 p-3 bg-white rounded shadow-sm">
-    <h6 class="border-bottom border-gray pb-2 mb-0">Accounts</h6>
+    <h4 class="border-bottom border-gray pb-2 mb-0">Accounts</h4>
     {% for account in accounts %}
     <div class="media text-muted pt-3">
       <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
@@ -18,7 +18,7 @@ Accounts list
     {% endfor %}
 
     <small class="d-block text-right mt-3">
-      <a href="{% url 'wallet:account_create' %}">Add account</a>
+      <a href="{% url 'wallet:account_create' %}"><button type="button" class="btn btn-primary btn-sm">Add account</button></a>
     </small>
   </div>
 {% endblock %}

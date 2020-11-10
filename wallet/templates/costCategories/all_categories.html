@@ -7,10 +7,10 @@ Categories list
 {% block content %}
 
     <div class="my-3 p-3 bg-white rounded shadow-sm">
-    <h6 class="border-bottom border-gray pb-2 mb-0">Cost categories</h6>
+    <h4 class="border-bottom border-gray pb-2 mb-0">Cost categories</h4>
     {% for cat, amount in categories %}
     <div class="media text-muted pt-3">
-      <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+      <p class="media-body pb-3 mb-0 lh-125 border-bottom border-gray">
         <strong class="d-block text-gray-dark"><a href="{{ cat.get_absolute_url }}">{{ cat.name }}</a></strong>
         Amount: {{ amount }}.
       </p>
@@ -18,7 +18,7 @@ Categories list
     {% endfor %}
 
     <small class="d-block text-right mt-3">
-      <a href="{% url 'wallet:costcategory_create' %}">Add category</a>
+      <a href="{% url 'wallet:costcategory_create' %}"><button type="button" class="btn btn-primary btn-sm">Add category</button></a>
     </small>
   </div>
 {% endblock %}
