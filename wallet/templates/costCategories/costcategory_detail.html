@@ -13,10 +13,10 @@ Category {{ category.name }}
 
     {% if children %}
     <div class="my-3 p-3 bg-white rounded shadow-sm">
-    <h6 class="border-bottom border-gray text-black-50 pb-2 mb-0">Child categories</h6>
+    <h6 class="border-bottom border-gray text-black-50 pb-2 mb-0">Subcategories</h6>
     {% for child in children %}
         <div class="media text-muted pt-3">
-            <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+            <p class="media-body pb-3 mb-0 lh-125 border-bottom border-gray">
             <strong class="d-block text-gray-dark"><a href="{{ child.get_absolute_url }}">{{ child.name }}</a></strong>
             </p>
         </div>
