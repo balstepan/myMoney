@@ -19,6 +19,9 @@ Accounts list
 
     <small class="d-block text-right mt-3">
       <a href="{% url 'wallet:account_create' %}"><button type="button" class="btn btn-primary btn-sm">Add account</button></a>
+      {% if accounts|length > 1 %}
+      <a href="{% url 'wallet:transfer_create' %}"><button type="button" class="btn btn-success btn-sm">Transfer</button></a>
+      {% endif %}
     </small>
   </div>
 {% endblock %}

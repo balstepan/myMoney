@@ -31,3 +31,9 @@ class IncomeForm(forms.ModelForm):
     class Meta:
         model = models.Income
         fields = ('category', 'note', 'value', 'currency', 'account')
+
+
+class TransferForm(forms.ModelForm):
+    class Meta:
+        model = models.Transfer
+        fields = ('from_account', 'to_account', 'value_from')

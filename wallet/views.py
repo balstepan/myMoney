@@ -339,3 +339,24 @@ def income_delete(request, income_id):
                       'delete.html',
                       {'obj_type': 'income',
                        'object': income})
+
+
+class TransferCreate(View):
+    def get(self, request):
+        transfer_form = forms.TransferForm()
+        return render(request,
+                      'transfers/create.html',
+                      {'form': transfer_form})
+
+    def post(self, request):
+        transfer_form = forms.TransferForm(request.POST)
+        if transfer_form.is_valid():
+            new_transfer = transfer_form.save(commit=False)
+            new_transfer.user = request.user
+            new_transfer.value_to = new_transfer.value_from
+            new_transfer.from_account.balance -= new_transfer.value_from
+            new_transfer.to_account.balance += new_transfer.value_to
+            new_transfer.from_account.save()
+            new_transfer.to_account.save()
+            new_transfer.save()
+            return redirect('wallet:all_accounts')

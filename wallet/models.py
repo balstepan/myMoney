@@ -144,12 +144,14 @@ class Income(models.Model):
 
 class Transfer(models.Model):
     from_account = models.ForeignKey(Account,
+                                     verbose_name='From',
                                      on_delete=models.CASCADE,
                                      related_name='transfers_from')
     to_account = models.ForeignKey(Account,
+                                   verbose_name='To',
                                    on_delete=models.CASCADE,
                                    related_name='transfers_to')
-    value_from = models.DecimalField(verbose_name='Amount from',
+    value_from = models.DecimalField(verbose_name='Value',
                                      max_digits=10,
                                      decimal_places=2)
     value_to = models.DecimalField(verbose_name='Amount to',

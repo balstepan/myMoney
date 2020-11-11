@@ -31,4 +31,5 @@ urlpatterns = [
     path('income/delete/<int:income_id>/', views.income_delete, name='income_delete'),
     path('costcategory/delete/<int:costcat_id>/', views.cost_category_delete, name='costcategory_delete'),
     path('incomecategory/delete/<int:incomecat_id>/', views.income_category_delete, name='incomecategory_delete'),
+    path('transfer/create/', views.TransferCreate.as_view(), name='transfer_create'),
     ]
