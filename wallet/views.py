@@ -132,6 +132,19 @@ class CreateCostCategory(View):
                 return redirect(new_category)
 
 
+def cost_category_delete(request, costcat_id):
+    cost_category = get_object_or_404(models.CostCategory, id=costcat_id)
+
+    if request.method == "POST":
+        cost_category.delete()
+        return redirect("wallet:all_cost_categories")
+    else:
+        return render(request,
+                      'delete.html',
+                      {'obj_type': 'cost category',
+                       'object': cost_category})
+
+
 class AllIncomeCategories(View):
 
     def get(self, request, days=30):

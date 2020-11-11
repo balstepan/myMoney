@@ -29,4 +29,5 @@ urlpatterns = [
     path('account/delete/<int:acc_id>/', views.account_delete, name='account_delete'),
     path('cost/delete/<int:cost_id>/', views.cost_delete, name='cost_delete'),
     path('income/delete/<int:income_id>/', views.income_delete, name='income_delete'),
+    path('costcategory/delete/<int:costcat_id>/', views.cost_category_delete, name='costcategory_delete'),
     ]
