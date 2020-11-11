@@ -99,23 +99,37 @@ class CostCategory(View):
 
 
 class CreateCostCategory(View):
-    def get(self, request):
-        cost_category_form = forms.CostCategoryForm()
+    def get(self, request, costcat_id=None):
+        if costcat_id:
+            cost_category = models.CostCategory.objects.get(pk=costcat_id)
+            cost_category_form = forms.CostCategoryForm(instance=cost_category)
+        else:
+            cost_category_form = forms.CostCategoryForm()
         return render(request,
                       'costCategories/create.html',
                       {'form': cost_category_form})
 
-    def post(self, request):
-        cost_category_form = forms.CostCategoryForm(request.POST)
-        if cost_category_form.is_valid():
-            new_category = cost_category_form.save(commit=False)
-            new_category.user = request.user
-            new_category.slug = slugify(new_category.name)
-            new_category.color = 'green'
-            new_category.save()
-            return render(request,
+    def post(self, request, costcat_id=None):
+        if not costcat_id:
+            cost_category_form = forms.CostCategoryForm(request.POST)
+            if cost_category_form.is_valid():
+                new_category = cost_category_form.save(commit=False)
+                new_category.user = request.user
+                new_category.slug = slugify(new_category.name)
+                new_category.color = 'green'
+                new_category.save()
+                return render(request,
                           'costCategories/costcategory_detail.html',
                           {'category': new_category})
+        else:
+            cost_category = models.CostCategory.objects.get(pk=costcat_id)
+            cost_category_form = forms.CostCategoryForm(request.POST, instance=cost_category)
+            if cost_category_form.is_valid():
+                new_category = cost_category_form.save(commit=False)
+                new_category.user = request.user
+                new_category.slug = slugify(new_category.name)
+                new_category.save()
+                return redirect(new_category)
 
 
 class AllIncomeCategories(View):

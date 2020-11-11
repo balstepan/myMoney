@@ -2,15 +2,15 @@
 
 {% load crispy_forms_tags %}
 
-{% block title %} Create Cost Category {% endblock %}
+{% block title %} {% if form.initial %}Edit{% else %}Create{% endif %} Cost Category {% endblock %}
 
 {% block content %}
     <div class="my-3 p-3 bg-white rounded shadow-sm">
-    <h4 class="border-bottom border-gray pb-2 mb-0">Create new cost category</h4>
+    <h4 class="border-bottom border-gray pb-2 mb-0">{% if form.initial %}Edit{% else %}Create{% endif %} cost category</h4>
     <form action="." method="post">
         {{ form|crispy }}
         {% csrf_token %}
-        <button type="submit" class="btn btn-primary">Create</button>
+        <button type="submit" class="btn btn-primary">{% if form.initial %}Edit{% else %}Create{% endif %}</button>
     </form>
     </div>
 {% endblock %}
