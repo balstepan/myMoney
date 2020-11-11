@@ -172,6 +172,19 @@ class IncomeCategory(View):
                        'incomes': incomes})
 
 
+def income_category_delete(request, incomecat_id):
+    income_category = get_object_or_404(models.IncomeCategory, id=incomecat_id)
+
+    if request.method == "POST":
+        income_category.delete()
+        return redirect("wallet:all_income_categories")
+    else:
+        return render(request,
+                      'delete.html',
+                      {'obj_type': 'income category',
+                       'object': income_category})
+
+
 class CreateIncomeCategory(View):
     def get(self, request, incomecat_id=None):
         if incomecat_id:

@@ -35,6 +35,7 @@ Category {{ category.name }}
     <small class="d-block text-right mt-3">
         <a href="{% url 'wallet:income_create' %}"><button type="button" class="btn btn-primary btn-sm">Add income</button></a>
         <a href="{% url 'wallet:incomecategory_edit' incomecat_id=category.id %}"><button type="button" class="btn btn-success btn-sm">Edit category</button></a>
+        <a href="{% url 'wallet:incomecategory_delete' incomecat_id=category.id %}"><button type="button" class="btn btn-danger btn-sm">Delete category</button></a>
     </small>
     </div>
     {% else %}
@@ -47,6 +48,7 @@ Category {{ category.name }}
         <small class="d-block text-right mt-3">
             <a href="{% url 'wallet:income_create' %}"><button type="button" class="btn btn-primary btn-sm">Add income</button></a>
             <a href="{% url 'wallet:incomecategory_edit' incomecat_id=category.id %}"><button type="button" class="btn btn-success btn-sm">Edit category</button></a>
+            <a href="{% url 'wallet:incomecategory_delete' incomecat_id=category.id %}"><button type="button" class="btn btn-danger btn-sm">Delete category</button></a>
         </small>
         </div>
     {% endif %}
