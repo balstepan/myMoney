@@ -160,23 +160,37 @@ class IncomeCategory(View):
 
 
 class CreateIncomeCategory(View):
-    def get(self, request):
-        income_category_form = forms.IncomeCategoryForm()
+    def get(self, request, incomecat_id=None):
+        if incomecat_id:
+            income_category = models.IncomeCategory.objects.get(pk=incomecat_id)
+            income_category_form = forms.IncomeCategoryForm(instance=income_category)
+        else:
+            income_category_form = forms.IncomeCategoryForm()
         return render(request,
                       'incomeCategories/create.html',
                       {'form': income_category_form})
 
-    def post(self, request):
-        income_category_form = forms.IncomeCategoryForm(request.POST)
-        if income_category_form.is_valid():
-            new_category = income_category_form.save(commit=False)
-            new_category.user = request.user
-            new_category.slug = slugify(new_category.name)
-            new_category.color = 'green'
-            new_category.save()
-            return render(request,
-                          'incomeCategories/incomecategory_detail.html',
-                          {'category': new_category})
+    def post(self, request, incomecat_id=None):
+        if not incomecat_id:
+            income_category_form = forms.IncomeCategoryForm(request.POST)
+            if income_category_form.is_valid():
+                new_category = income_category_form.save(commit=False)
+                new_category.user = request.user
+                new_category.slug = slugify(new_category.name)
+                new_category.color = 'green'
+                new_category.save()
+                return render(request,
+                              'incomeCategories/incomecategory_detail.html',
+                              {'category': new_category})
+        else:
+            income_category = models.IncomeCategory.objects.get(pk=incomecat_id)
+            income_category_form = forms.IncomeCategoryForm(request.POST, instance=income_category)
+            if income_category_form.is_valid():
+                new_category = income_category_form.save(commit=False)
+                new_category.user = request.user
+                new_category.slug = slugify(new_category.name)
+                new_category.save()
+                return redirect(new_category)
 
 
 class Cost(View):

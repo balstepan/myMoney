@@ -34,6 +34,7 @@ Category {{ category.name }}
     </table>
     <small class="d-block text-right mt-3">
         <a href="{% url 'wallet:income_create' %}"><button type="button" class="btn btn-primary btn-sm">Add income</button></a>
+        <a href="{% url 'wallet:incomecategory_edit' incomecat_id=category.id %}"><button type="button" class="btn btn-success btn-sm">Edit category</button></a>
     </small>
     </div>
     {% else %}
@@ -45,6 +46,7 @@ Category {{ category.name }}
             </div>
         <small class="d-block text-right mt-3">
             <a href="{% url 'wallet:income_create' %}"><button type="button" class="btn btn-primary btn-sm">Add income</button></a>
+            <a href="{% url 'wallet:incomecategory_edit' incomecat_id=category.id %}"><button type="button" class="btn btn-success btn-sm">Edit category</button></a>
         </small>
         </div>
     {% endif %}
