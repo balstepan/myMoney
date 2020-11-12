@@ -17,9 +17,6 @@ class Account(models.Model):
     balance = models.DecimalField(verbose_name='Balance',
                                   max_digits=10,
                                   decimal_places=2)
-    currency = models.CharField(max_length=30,
-                                choices=CURRENCIES,
-                                default='BYN')
     user = models.ForeignKey(User,
                              on_delete=models.CASCADE,
                              related_name='accounts')
@@ -46,7 +43,6 @@ class CostCategory(models.Model):
                                default=None,
                                null=True,
                                blank=True)
-    color = models.CharField(max_length=30)
     image = models.ImageField(null=True, blank=True)
 
     class Meta:
@@ -74,7 +70,6 @@ class Cost(models.Model):
                                 default='BYN')
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    publish = models.DateTimeField(default=timezone.now)
     account = models.ForeignKey(Account,
                                 null=True,
                                 on_delete=models.SET_NULL,
@@ -97,7 +92,6 @@ class IncomeCategory(models.Model):
                              on_delete=models.CASCADE,
                              related_name='income_categories')
     slug = models.SlugField(max_length=80)
-    color = models.CharField(max_length=30)
     image = models.ImageField(null=True, blank=True)
 
     class Meta:
@@ -125,7 +119,6 @@ class Income(models.Model):
                                 default='BYN')
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    publish = models.DateTimeField(default=timezone.now)
     account = models.ForeignKey(Account,
                                 null=True,
                                 on_delete=models.SET_NULL,
@@ -154,21 +147,16 @@ class Transfer(models.Model):
     value_from = models.DecimalField(verbose_name='Value',
                                      max_digits=10,
                                      decimal_places=2)
-    value_to = models.DecimalField(verbose_name='Amount to',
-                                   max_digits=10,
-                                   decimal_places=2)
     user = models.ForeignKey(User,
                              on_delete=models.CASCADE,
                              related_name='transfers')
     created_at = models.DateField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    publish = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return 'From {} to {} {} {}'.format(str(self.from_account),
                                             str(self.to_account),
                                             self.value_from,
-                                            self.from_account.currency)
+                                            'BYN')
 
 
 class Rates(models.Model):

@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 class AccountForm(forms.ModelForm):
     class Meta:
         model = models.Account
-        fields = ('name', 'balance', 'currency')
+        fields = ('name', 'balance')
 
 
 class CostCategoryForm(forms.ModelForm):

@@ -7,6 +7,7 @@ from pytils.translit import slugify
 
 from . import models
 from . import forms
+from . import rates
 
 
 class AllAccounts(View):
@@ -75,8 +76,9 @@ class AllCostCategories(View):
             cats_for_count = [cat, ] + self._get_all_children(cat)
             amount = 0
             for cat_for_count in cats_for_count:
-                costs = cat_for_count.costs.filter(created_at__gt=datetime.now()-timedelta(days=days))
-                amount += sum(cost.value for cost in costs)
+                costs = cat_for_count.costs.filter(created_at__gt=datetime.now() - timedelta(days=days))
+                for cost in costs:
+                    amount += rates.get_byn(cost.value, cost.currency)
             amounts.append(amount)
         context = zip(cost_categories_list, amounts)
         return render(request,
@@ -116,7 +118,6 @@ class CreateCostCategory(View):
                 new_category = cost_category_form.save(commit=False)
                 new_category.user = request.user
                 new_category.slug = slugify(new_category.name)
-                new_category.color = 'green'
                 new_category.save()
                 return render(request,
                           'costCategories/costcategory_detail.html',
@@ -151,8 +152,10 @@ class AllIncomeCategories(View):
         income_categories_list = models.IncomeCategory.objects.filter(user=request.user)
         amounts = []
         for cat in income_categories_list:
-            incomes = cat.incomes.filter(created_at__gt=datetime.now()-timedelta(days=days))
-            amount = sum(income.value for income in incomes)
+            incomes = cat.incomes.filter(created_at__gt=datetime.now() - timedelta(days=days))
+            amount = 0
+            for income in incomes:
+                amount += rates.get_byn(income.value, income.currency)
             amounts.append(amount)
         context = zip(income_categories_list, amounts)
         return render(request,
@@ -203,7 +206,6 @@ class CreateIncomeCategory(View):
                 new_category = income_category_form.save(commit=False)
                 new_category.user = request.user
                 new_category.slug = slugify(new_category.name)
-                new_category.color = 'green'
                 new_category.save()
                 return render(request,
                               'incomeCategories/incomecategory_detail.html',
@@ -236,26 +238,27 @@ class Cost(View):
             if cost_form.is_valid():
                 new_cost = cost_form.save(commit=False)
                 new_cost.user = request.user
-                new_cost.account.balance -= new_cost.value
+                new_cost.account.balance -= rates.get_byn(new_cost.value, new_cost.currency)
                 new_cost.save()
                 new_cost.account.save()
         else:
             cost = models.Cost.objects.get(pk=cost_id)
             old_value = cost.value
+            old_currency = cost.currency
             old_account = cost.account
             cost_form = forms.CostForm(request.POST, instance=cost)
             if cost_form.is_valid():
                 new_cost = cost_form.save(commit=False)
                 new_cost.user = request.user
                 if old_account == new_cost.account:
-                    new_cost.account.balance += old_value
+                    new_cost.account.balance += rates.get_byn(old_value, old_currency)
                     if old_account:
                         old_account.save()
                 else:
                     if old_account:
-                        old_account.balance += old_value
+                        old_account.balance += rates.get_byn(old_value, old_currency)
                         old_account.save()
-                new_cost.account.balance -= new_cost.value
+                new_cost.account.balance -= rates.get_byn(new_cost.value, new_cost.currency)
                 new_cost.save()
                 new_cost.account.save()
         return redirect(new_cost.category,
@@ -267,7 +270,7 @@ def cost_delete(request, cost_id):
     cost = get_object_or_404(models.Cost, id=cost_id)
 
     if request.method == "POST":
-        cost.account.balance += cost.value
+        cost.account.balance += rates.get_byn(cost.value, cost.currency)
         cost.account.save()
         cost.delete()
         return redirect("wallet:costcategory_details",
@@ -297,26 +300,27 @@ class Income(View):
             if income_form.is_valid():
                 new_income = income_form.save(commit=False)
                 new_income.user = request.user
-                new_income.account.balance += new_income.value
+                new_income.account.balance += rates.get_byn(new_income.value, new_income.currency)
                 new_income.save()
                 new_income.account.save()
         else:
             income = models.Income.objects.get(pk=income_id)
             old_value = income.value
+            old_currency = income.currency
             old_account = income.account
             income_form = forms.IncomeForm(request.POST, instance=income)
             if income_form.is_valid():
                 new_income = income_form.save(commit=False)
                 new_income.user = request.user
                 if old_account == new_income.account:
-                    new_income.account.balance -= old_value
+                    new_income.account.balance -= rates.get_byn(old_value, old_currency)
                     if old_account:
                         old_account.save()
                 else:
                     if old_account:
-                        old_account.balance -= old_value
+                        old_account.balance -= rates.get_byn(old_value, old_currency)
                         old_account.save()
-                new_income.account.balance += new_income.value
+                new_income.account.balance += rates.get_byn(new_income.value, new_income.currency)
                 new_income.save()
                 new_income.account.save()
         return redirect(new_income.category,
@@ -328,8 +332,9 @@ def income_delete(request, income_id):
     income = get_object_or_404(models.Income, id=income_id)
 
     if request.method == "POST":
-        income.account.balance -= income.value
-        income.account.save()
+        if income.account:
+            income.account.balance -= rates.get_byn(income.value, income.currency)
+            income.account.save()
         income.delete()
         return redirect("wallet:incomecategory_details",
                         user_id=request.user.id,
@@ -353,9 +358,8 @@ class TransferCreate(View):
         if transfer_form.is_valid():
             new_transfer = transfer_form.save(commit=False)
             new_transfer.user = request.user
-            new_transfer.value_to = new_transfer.value_from
             new_transfer.from_account.balance -= new_transfer.value_from
-            new_transfer.to_account.balance += new_transfer.value_to
+            new_transfer.to_account.balance += new_transfer.value_from
             new_transfer.from_account.save()
             new_transfer.to_account.save()
             new_transfer.save()

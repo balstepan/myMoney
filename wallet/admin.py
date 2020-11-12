@@ -4,10 +4,10 @@ from . import models
 
 @admin.register(models.Account)
 class AccountAdmin(admin.ModelAdmin):
-    list_display = ('name', 'currency', 'balance', 'user')
-    list_filter = ('name', 'currency', 'user')
+    list_display = ('name', 'balance', 'user')
+    list_filter = ('name', 'user')
     search_fields = ('name',)
-    ordering = ('name', 'currency', 'user')
+    ordering = ('name', 'user')
 
 
 @admin.register(models.CostCategory)
@@ -24,7 +24,7 @@ class CostAdmin(admin.ModelAdmin):
     list_display = ('category', 'note', 'value', 'currency', 'user')
     list_filter = ('currency', 'user', 'account', 'category')
     search_fields = ('note',)
-    ordering = ('publish', 'user')
+    ordering = ('updated_at', 'user')
 
 
 @admin.register(models.IncomeCategory)
@@ -41,7 +41,7 @@ class IncomeAdmin(admin.ModelAdmin):
     list_display = ('category', 'note', 'value', 'currency', 'user')
     list_filter = ('currency', 'user', 'account', 'category')
     search_fields = ('note',)
-    ordering = ('publish', 'user')
+    ordering = ('updated_at', 'user')
 
 
 @admin.register(models.Transfer)
@@ -49,9 +49,8 @@ class TransferAdmin(admin.ModelAdmin):
     list_display = ('from_account',
                     'to_account',
                     'value_from',
-                    'value_to',
                     'user')
     list_filter = ('from_account',
                    'to_account',
                    'user')
-    ordering = ('publish', 'user')
+    ordering = ('created_at', 'user')
