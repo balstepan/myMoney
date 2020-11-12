@@ -169,3 +169,13 @@ class Transfer(models.Model):
                                             str(self.to_account),
                                             self.value_from,
                                             self.from_account.currency)
+
+
+class Rates(models.Model):
+    usd = models.DecimalField(verbose_name='USD', max_digits=10, decimal_places=4)
+    eur = models.DecimalField(verbose_name='EUR', max_digits=10, decimal_places=4)
+    rub = models.DecimalField(verbose_name='RUB', max_digits=10, decimal_places=4)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return str(self.updated_at)
