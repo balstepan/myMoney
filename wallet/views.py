@@ -2,7 +2,8 @@ from datetime import datetime, timedelta
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
-from django.contrib.auth.models import User
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from pytils.translit import slugify
 
 from . import models
@@ -10,7 +11,7 @@ from . import forms
 from . import rates
 
 
-class AllAccounts(View):
+class AllAccounts(LoginRequiredMixin, View):
     def get(self, request):
         accounts = models.Account.objects.filter(user=request.user)
         return render(request,
@@ -18,7 +19,7 @@ class AllAccounts(View):
                       {'accounts': accounts})
 
 
-class AccountDetail(View):
+class AccountDetail(LoginRequiredMixin, View):
     def get(self, request, user_id=None, slug=None):
         if slug:
             account = get_object_or_404(models.Account, slug=slug,
@@ -45,6 +46,7 @@ class AccountDetail(View):
         return redirect('wallet:all_accounts')
 
 
+@login_required
 def account_delete(request, acc_id):
     account = get_object_or_404(models.Account, id=acc_id)
 
@@ -58,7 +60,7 @@ def account_delete(request, acc_id):
                        'object': account})
 
 
-class AllCostCategories(View):
+class AllCostCategories(LoginRequiredMixin, View):
 
     def _get_all_children(self, parent_cat):
         cat_list = []
@@ -86,7 +88,7 @@ class AllCostCategories(View):
                       {'categories': context})
 
 
-class CostCategory(View):
+class CostCategory(LoginRequiredMixin, View):
 
     def get(self, request, user_id, slug, days=30):
         category = get_object_or_404(models.CostCategory, slug=slug,
@@ -100,7 +102,7 @@ class CostCategory(View):
                        'costs': costs})
 
 
-class CreateCostCategory(View):
+class CreateCostCategory(LoginRequiredMixin, View):
     def get(self, request, costcat_id=None):
         if costcat_id:
             cost_category = models.CostCategory.objects.get(pk=costcat_id)
@@ -133,6 +135,7 @@ class CreateCostCategory(View):
                 return redirect(new_category)
 
 
+@login_required()
 def cost_category_delete(request, costcat_id):
     cost_category = get_object_or_404(models.CostCategory, id=costcat_id)
 
@@ -146,7 +149,7 @@ def cost_category_delete(request, costcat_id):
                        'object': cost_category})
 
 
-class AllIncomeCategories(View):
+class AllIncomeCategories(LoginRequiredMixin, View):
 
     def get(self, request, days=30):
         income_categories_list = models.IncomeCategory.objects.filter(user=request.user)
@@ -163,7 +166,7 @@ class AllIncomeCategories(View):
                       {'categories': context})
 
 
-class IncomeCategory(View):
+class IncomeCategory(LoginRequiredMixin, View):
 
     def get(self, request, user_id, slug, days=30):
         category = get_object_or_404(models.IncomeCategory, slug=slug,
@@ -175,6 +178,7 @@ class IncomeCategory(View):
                        'incomes': incomes})
 
 
+@login_required
 def income_category_delete(request, incomecat_id):
     income_category = get_object_or_404(models.IncomeCategory, id=incomecat_id)
 
@@ -188,7 +192,7 @@ def income_category_delete(request, incomecat_id):
                        'object': income_category})
 
 
-class CreateIncomeCategory(View):
+class CreateIncomeCategory(LoginRequiredMixin, View):
     def get(self, request, incomecat_id=None):
         if incomecat_id:
             income_category = models.IncomeCategory.objects.get(pk=incomecat_id)
@@ -221,7 +225,7 @@ class CreateIncomeCategory(View):
                 return redirect(new_category)
 
 
-class Cost(View):
+class Cost(LoginRequiredMixin, View):
     def get(self, request, cost_id=None):
         if cost_id:
             cost = models.Cost.objects.get(pk=cost_id)
@@ -266,6 +270,7 @@ class Cost(View):
                             slug=new_cost.category.slug)
 
 
+@login_required
 def cost_delete(request, cost_id):
     cost = get_object_or_404(models.Cost, id=cost_id)
 
@@ -283,7 +288,7 @@ def cost_delete(request, cost_id):
                        'object': cost})
 
 
-class Income(View):
+class Income(LoginRequiredMixin, View):
     def get(self, request, income_id=None):
         if income_id:
             income = models.Income.objects.get(pk=income_id)
@@ -328,6 +333,7 @@ class Income(View):
                             slug=new_income.category.slug)
 
 
+@login_required
 def income_delete(request, income_id):
     income = get_object_or_404(models.Income, id=income_id)
 
@@ -346,7 +352,7 @@ def income_delete(request, income_id):
                        'object': income})
 
 
-class TransferCreate(View):
+class TransferCreate(LoginRequiredMixin, View):
     def get(self, request):
         transfer_form = forms.TransferForm()
         return render(request,

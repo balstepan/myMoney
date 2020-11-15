@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+    <div class="my-3 p-3 bg-white rounded shadow-sm">
+    <h4 class="border-bottom border-gray pb-2 mb-0">User login:</h4>
+    {% if form.errors %}
+        BAD CRED
+    {% endif %}
+    <form action="." method="post">
+        {{ form|crispy }}
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+    <small class="d-block text-right mt-3">
+{#        <a href="{% url "lesson:password_reset" %}">Forgot your password?</a>#}
+    </small>
+    </div>
+{% endblock %}
