@@ -11,7 +11,7 @@ Accounts list
     {% for account in accounts %}
     <div class="media text-muted pt-3">
       <p class="media-body pb-3 mb-0 lh-125 border-bottom border-gray">
-        <strong class="d-block text-gray-dark"><a href="{{ account.get_absolute_url }}">{{ account.name }}</a></strong>
+        <strong class="d-block text-gray-dark"><img src="{{ account.image.url }}"><a href="{{ account.get_absolute_url }}">{{ account.name }}</a></strong>
         Balance: {{ account.balance }} BYN.
       </p>
     </div>

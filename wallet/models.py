@@ -20,7 +20,7 @@ class Account(models.Model):
     user = models.ForeignKey(User,
                              on_delete=models.CASCADE,
                              related_name='accounts')
-    image = models.ImageField(null=True, blank=True)
+    image = models.ImageField(upload_to="icons/", null=True, blank=True)
 
     def __str__(self):
         return self.name

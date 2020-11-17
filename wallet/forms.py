@@ -6,19 +6,19 @@ from django.contrib.auth.models import User
 class AccountForm(forms.ModelForm):
     class Meta:
         model = models.Account
-        fields = ('name', 'balance')
+        fields = ('name', 'balance', 'image')
 
 
 class CostCategoryForm(forms.ModelForm):
     class Meta:
         model = models.CostCategory
-        fields = ('name', 'parent')
+        fields = ('name', 'parent', 'image')
 
 
 class IncomeCategoryForm(forms.ModelForm):
     class Meta:
         model = models.IncomeCategory
-        fields = ('name',)
+        fields = ('name', 'image')
 
 
 class CostForm(forms.ModelForm):

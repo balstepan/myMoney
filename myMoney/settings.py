@@ -13,7 +13,7 @@ import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # Quick-start development settings - unsuitable for production
@@ -130,8 +130,13 @@ LOGOUT_URL = '/accounts/logout/'
 
 LOGIN_REDIRECT_URL = '/wallet/'
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
 DEFAULT_COST_CATEGORIES = ('Home', 'Car', 'Food', 'Hygiene', 'Health',
                            'Entertainment', 'Clothes', 'Pets', 'Gifts',
                            'Bills', 'Transport')
 DEFAULT_INCOME_CATEGORIES = ('Salary', 'Deposits', 'Savings')
 DEFAULT_ACCOUNTS = ('Cash', 'Card')
+
+DEFAULT_ACCOUNTS_ICONS = ('cash.png', 'card.png')
