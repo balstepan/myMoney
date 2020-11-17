@@ -9,7 +9,7 @@ from pytils.translit import slugify
 from . import models
 from . import forms
 from . import rates
-
+from myMoney.settings import DEFAULT_ACCOUNTS, DEFAULT_COST_CATEGORIES, DEFAULT_INCOME_CATEGORIES
 
 class AllAccounts(LoginRequiredMixin, View):
     def get(self, request):
@@ -370,3 +370,38 @@ class TransferCreate(LoginRequiredMixin, View):
             new_transfer.to_account.save()
             new_transfer.save()
             return redirect('wallet:all_accounts')
+
+
+def register(request):
+    if request.method == "POST":
+        user_form = forms.UserRegistrationForm(request.POST)
+        if user_form.is_valid():
+            new_user = user_form.save(commit=False)
+            new_user.set_password(
+                user_form.cleaned_data['password'],
+            )
+            new_user.save()
+            for cat in DEFAULT_COST_CATEGORIES:
+                models.CostCategory.objects.create(
+                    name=cat,
+                    user = new_user,
+                    slug = slugify(cat)
+                )
+            for cat in DEFAULT_INCOME_CATEGORIES:
+                models.IncomeCategory.objects.create(
+                    name=cat,
+                    user = new_user,
+                    slug = slugify(cat)
+                )
+            for acc in DEFAULT_ACCOUNTS:
+                models.Account.objects.create(
+                    name=acc,
+                    balance=0,
+                    user = new_user,
+                    slug = slugify(acc)
+                )
+            return render(request, 'registration/registration_complete.html',
+                          {'new_user': new_user})
+    else:
+        user_form = forms.UserRegistrationForm()
+    return render(request, 'registration/registration.html', {'form': user_form})

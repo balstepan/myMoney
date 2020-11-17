@@ -129,3 +129,9 @@ LOGIN_URL = '/accounts/login/'
 LOGOUT_URL = '/accounts/logout/'
 
 LOGIN_REDIRECT_URL = '/wallet/'
+
+DEFAULT_COST_CATEGORIES = ('Home', 'Car', 'Food', 'Hygiene', 'Health',
+                           'Entertainment', 'Clothes', 'Pets', 'Gifts',
+                           'Bills', 'Transport')
+DEFAULT_INCOME_CATEGORIES = ('Salary', 'Deposits', 'Savings')
+DEFAULT_ACCOUNTS = ('Cash', 'Card')
