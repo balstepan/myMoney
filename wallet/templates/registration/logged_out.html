@@ -8,9 +8,9 @@
     <div class="my-3 p-3 bg-white rounded shadow-sm">
     <h4 class="border-bottom border-gray pb-2 mb-0">Logout:</h4>
     <p>You've been logged out. You can login again:
-    <a href="{% url "authentication:login" %}">Login</a></p>
+    <a href="{% url "login" %}">Login</a></p>
     <small class="d-block text-right mt-3">
-        <a href="{% url "authentication:password_reset" %}">Forgot your password?</a>
+        <a href="{% url "password_reset" %}">Forgot your password?</a>
     </small>
     </div>
 {% endblock %}
