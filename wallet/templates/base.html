@@ -21,22 +21,11 @@
   </nav>
   {% if request.user.is_authenticated %}
       HI {{ request.user.username }} &nbsp;
-      <a class="btn btn-outline-primary" href="{% url 'logout' %}">Logout</a>
+      <a class="btn btn-outline-primary" href="{% url 'authentication:logout' %}">Logout</a>
   {% else %}
-    <a class="btn btn-outline-primary" href="{% url 'login' %}">Login</a>
+    <a class="btn btn-outline-primary" href="{% url 'authentication:login' %}">Login</a>
   {% endif %}
 </div>
-
-{#<header>#}
-{#    {% if request.user.is_authenticated %}#}
-{#        HI {{ request.user.first_name }}#}
-{#        <a href="{% url "lesson:logout" %}">logout</a>#}
-{#        <a href="{% url "lesson:profile" %}">Profile</a>#}
-{#    {% else %}#}
-{#        <a href="{% url "lesson:login" %}">login</a>#}
-{#        <a href="{% url "lesson:register" %}">register</a>#}
-{#    {% endif %}#}
-{#</header>#}
 
 <div class="container-flex m-4">
     <div class="row mb-1">
