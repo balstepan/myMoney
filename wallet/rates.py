@@ -13,9 +13,9 @@ def get_rates():
         response = requests.get('https://www.nbrb.by/api/exrates/rates?periodicity=0')
         if response.ok:
             lst = response.json()
-            usd = lst[4]['Cur_OfficialRate']
-            eur = lst[5]['Cur_OfficialRate']
-            rub = lst[16]['Cur_OfficialRate'] / lst[16]['Cur_Scale']
+            usd = Decimal(lst[4]['Cur_OfficialRate'])
+            eur = Decimal(lst[5]['Cur_OfficialRate'])
+            rub = Decimal(lst[16]['Cur_OfficialRate'] / lst[16]['Cur_Scale'])
             cur_rates = models.Rates(usd=usd, eur=eur, rub=rub)
             cur_rates.save()
     return cur_rates
