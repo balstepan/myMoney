@@ -115,9 +115,9 @@ class CreateCostCategory(LoginRequiredMixin, View):
     def get(self, request, costcat_id=None):
         if costcat_id:
             cost_category = models.CostCategory.objects.get(pk=costcat_id)
-            cost_category_form = forms.CostCategoryForm(instance=cost_category)
+            cost_category_form = forms.CostCategoryForm(instance=cost_category, user=request.user)
         else:
-            cost_category_form = forms.CostCategoryForm()
+            cost_category_form = forms.CostCategoryForm(user=request.user)
         return render(request,
                       'costCategories/create.html',
                       {'form': cost_category_form})
@@ -242,9 +242,9 @@ class Cost(LoginRequiredMixin, View):
     def get(self, request, cost_id=None):
         if cost_id:
             cost = models.Cost.objects.get(pk=cost_id)
-            cost_form = forms.CostForm(instance=cost)
+            cost_form = forms.CostForm(instance=cost, user=request.user)
         else:
-            cost_form = forms.CostForm()
+            cost_form = forms.CostForm(user=request.user)
         return render(request,
                       'costs/create.html',
                       {'form': cost_form})
@@ -305,9 +305,9 @@ class Income(LoginRequiredMixin, View):
     def get(self, request, income_id=None):
         if income_id:
             income = models.Income.objects.get(pk=income_id)
-            income_form = forms.IncomeForm(instance=income)
+            income_form = forms.IncomeForm(instance=income, user=request.user)
         else:
-            income_form = forms.IncomeForm()
+            income_form = forms.IncomeForm(user=request.user)
         return render(request,
                       'incomes/create.html',
                       {'form': income_form})
@@ -367,7 +367,7 @@ def income_delete(request, income_id):
 
 class TransferCreate(LoginRequiredMixin, View):
     def get(self, request):
-        transfer_form = forms.TransferForm()
+        transfer_form = forms.TransferForm(user=request.user)
         return render(request,
                       'transfers/create.html',
                       {'form': transfer_form})
