@@ -4,11 +4,18 @@
 Category {{ category.name }}
 {% endblock %}
 
+
+
 {% block content %}
     <div class="d-flex align-items-center p-3 my-3 text-black bg-purple rounded shadow-sm">
         <div class="lh-100">
-          {% if category.image %}<img src="{{ category.image.url }}">{% endif %}
           <h4 class="mb-0 text-black lh-100">{{ category.name }}</h4>
+          {% if category.parent %}
+              <br>
+              <small>
+                  Parent: <a href="{{ category.parent.get_absolute_url }}">{{ category.parent.name }}</a>
+              </small>
+          {% endif %}
         </div>
     </div>
 
@@ -18,7 +25,11 @@ Category {{ category.name }}
     {% for child in children %}
         <div class="media text-muted pt-3">
             <p class="media-body pb-3 mb-0 lh-125 border-bottom border-gray">
-            <strong class="d-block text-gray-dark"><a href="{{ child.get_absolute_url }}">{{ child.name }}</a></strong>
+            <strong class="d-block text-gray-dark">
+                <a href="{{ child.get_absolute_url }}">
+                {% if child.image %}<img src="{{ child.image.url }}">{% endif %}{{ child.name }}
+                </a>
+            </strong>
             </p>
         </div>
     {% endfor %}

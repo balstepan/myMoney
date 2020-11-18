@@ -51,7 +51,8 @@ class AccountDetail(LoginRequiredMixin, View):
             new_account.user = request.user
             new_account.slug = slugify(new_account.name)
             new_account.save()
-            edit_image(new_account.image.path)
+            if new_account.image:
+                edit_image(new_account.image.path)
         return redirect('wallet:all_accounts')
 
 
@@ -130,7 +131,8 @@ class CreateCostCategory(LoginRequiredMixin, View):
                 new_category.user = request.user
                 new_category.slug = slugify(new_category.name)
                 new_category.save()
-                edit_image(new_category.image.path)
+                if new_category.image:
+                    edit_image(new_category.image.path)
                 return render(request,
                           'costCategories/costcategory_detail.html',
                           {'category': new_category})
@@ -142,7 +144,8 @@ class CreateCostCategory(LoginRequiredMixin, View):
                 new_category.user = request.user
                 new_category.slug = slugify(new_category.name)
                 new_category.save()
-                edit_image(new_category.image.path)
+                if new_category.image:
+                    edit_image(new_category.image.path)
                 return redirect(new_category)
 
 
@@ -222,7 +225,8 @@ class CreateIncomeCategory(LoginRequiredMixin, View):
                 new_category.user = request.user
                 new_category.slug = slugify(new_category.name)
                 new_category.save()
-                edit_image(new_category.image.path)
+                if new_category.image:
+                    edit_image(new_category.image.path)
                 return render(request,
                               'incomeCategories/incomecategory_detail.html',
                               {'category': new_category})
@@ -234,7 +238,8 @@ class CreateIncomeCategory(LoginRequiredMixin, View):
                 new_category.user = request.user
                 new_category.slug = slugify(new_category.name)
                 new_category.save()
-                edit_image(new_category.image.path)
+                if new_category.image:
+                    edit_image(new_category.image.path)
                 return redirect(new_category)
 
 
