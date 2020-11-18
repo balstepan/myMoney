@@ -6,8 +6,9 @@ from . import views
 app_name = 'wallet'
 
 urlpatterns = [
-    path('', views.AllCostCategories.as_view(), name='all_cost_categories'),
-    path('incomecategory/', views.AllIncomeCategories.as_view(), name='all_income_categories'),
+    path('', views.MainPage.as_view(), name='main_page'),
+    path('costcategories/', views.AllCostCategories.as_view(), name='all_cost_categories'),
+    path('incomecategories/', views.AllIncomeCategories.as_view(), name='all_income_categories'),
     path('accounts/', views.AllAccounts.as_view(), name='all_accounts'),
     path('<int:user_id>/costcategory/<slug:slug>/',
          views.CostCategory.as_view(),

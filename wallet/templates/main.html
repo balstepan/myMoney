@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}
+Main page
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+    <div class="my-3 col-6 p-3 bg-white rounded shadow-sm">
+    <h4 class="border-bottom border-gray pb-2 mb-0">Cost categories</h4>
+    {% for cat, percent in categories %}
+    <div class="row border-bottom border-gray">
+        <div class="media col-6 pt-3">
+          <p class="media-body pb-3 mb-0 lh-125">
+            <strong class="d-block text-gray-dark">
+                <a href="{{ cat.get_absolute_url }}">{% if cat.image %}<img src="{{ cat.image.url }}">{% endif %}{{ cat.name }}</a>
+            </strong>
+          </p>
+        </div>
+        <div class="media col-6 pt-4 ">
+            <p class="media-body pb-3 mb-0 lh-125 ">
+            <strong class="d-block text-gray-dark">{{ percent }}%</strong>
+            </p>
+        </div>
+    </div>
+    {% endfor %}
+    </div>
+    <div class="my-3 col-6 p-3 bg-white rounded shadow-sm">
+        <h4 class="pb-2 mb-0">Balance</h4>
+        <div class="media pt-4 border-bottom border-gray">
+            <p class="media-body pb-3 mb-0 lh-125 ">
+            <strong class="d-block text-gray-dark">{{ balance }} BYN</strong>
+            </p>
+        </div>
+        <h4 class="pb-2 mt-2">All costs</h4>
+        <div class="media pt-4 border-bottom border-gray">
+            <p class="media-body pb-3 mb-0 lh-125 ">
+            <strong class="d-block text-gray-dark">{{ costs_sum }} BYN</strong>
+            </p>
+        </div>
+        <h4 class="pb-2 mt-2">All incomes</h4>
+        <div class="media pt-4 border-bottom border-gray">
+            <p class="media-body pb-3 mb-0 lh-125 ">
+            <strong class="d-block text-gray-dark">{{ incomes_sum }} BYN</strong>
+            </p>
+        </div>
+        <div class="media pt-4">
+            <p class="media-body pb-3 mb-0 lh-125 text-center">
+                <a href="{% url 'wallet:cost_create' %}"><button type="button" class="btn btn-danger btn-lg">Cost</button></a>&nbsp;
+                <a href="{% url 'wallet:income_create' %}"><button type="button" class="btn btn-success btn-lg">Income</button></a>
+            </p>
+        </div>
+    </div>
+    </div>
+{% endblock %}

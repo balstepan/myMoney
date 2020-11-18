@@ -17,6 +17,48 @@ from myMoney.settings import (
     DEFAULT_ACCOUNTS_ICONS, DEFAULT_INCOME_ICONS, DEFAULT_COST_ICONS,
     ICON_SIZE)
 
+
+class MainPage(LoginRequiredMixin, View):
+    def get(self, request, days=30):
+        cost_categories_list = models.CostCategory.objects.filter(parent=None,
+                                                                  user=request.user)
+        cost_amounts = []
+        for cat in cost_categories_list:
+            cats_for_count = [cat, ] + _get_all_children(cat)
+            amount = 0
+            for cat_for_count in cats_for_count:
+                costs = cat_for_count.costs.filter(
+                    created_at__gt=datetime.now() - timedelta(days=days))
+                for cost in costs:
+                    amount += rates.get_byn(cost.value, cost.currency)
+            cost_amounts.append(amount)
+        costs_sum = sum(cost_amounts)
+        if costs_sum:
+            cost_percents = [round(amount / costs_sum * 100) for amount in cost_amounts]
+        else:
+            cost_percents = [0 for _ in cost_amounts]
+
+        income_categories_list = models.IncomeCategory.objects.filter(user=request.user)
+        incomes_sum = 0
+        for cat in income_categories_list:
+            incomes = cat.incomes.filter(created_at__gt=datetime.now() - timedelta(days=days))
+            for income in incomes:
+                incomes_sum += rates.get_byn(income.value, income.currency)
+
+        accounts_list = models.Account.objects.filter(user=request.user)
+        balance = 0
+        for acc in accounts_list:
+            balance += acc.balance
+
+        context = {
+            'categories': zip(cost_categories_list, cost_percents),
+            'costs_sum': costs_sum,
+            'incomes_sum': incomes_sum,
+            'balance': balance
+        }
+        return render(request, 'main.html', context)
+
+
 class AllAccounts(LoginRequiredMixin, View):
     def get(self, request):
         accounts = models.Account.objects.filter(user=request.user)
@@ -72,20 +114,12 @@ def account_delete(request, acc_id):
 
 class AllCostCategories(LoginRequiredMixin, View):
 
-    def _get_all_children(self, parent_cat):
-        cat_list = []
-        if parent_cat.children.all():
-            cat_list += list(parent_cat.children.all())
-            for cat in parent_cat.children.all():
-                cat_list += self._get_all_children(cat)
-        return cat_list
-
     def get(self, request, days=30):
         cost_categories_list = models.CostCategory.objects.filter(parent=None,
                                                                   user=request.user)
         amounts = []
         for cat in cost_categories_list:
-            cats_for_count = [cat, ] + self._get_all_children(cat)
+            cats_for_count = [cat, ] + _get_all_children(cat)
             amount = 0
             for cat_for_count in cats_for_count:
                 costs = cat_for_count.costs.filter(created_at__gt=datetime.now() - timedelta(days=days))
@@ -427,6 +461,15 @@ def register(request):
     else:
         user_form = forms.UserRegistrationForm()
     return render(request, 'registration/registration.html', {'form': user_form})
+
+
+def _get_all_children(parent_cat):
+    cat_list = []
+    if parent_cat.children.all():
+        cat_list += list(parent_cat.children.all())
+        for cat in parent_cat.children.all():
+            cat_list += _get_all_children(cat)
+    return cat_list
 
 
 def edit_image(src):
