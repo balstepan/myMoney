@@ -124,7 +124,7 @@ class CreateCostCategory(LoginRequiredMixin, View):
 
     def post(self, request, costcat_id=None):
         if not costcat_id:
-            cost_category_form = forms.CostCategoryForm(request.POST, files=request.FILES)
+            cost_category_form = forms.CostCategoryForm(request.user, request.POST, files=request.FILES)
             if cost_category_form.is_valid():
                 new_category = cost_category_form.save(commit=False)
                 new_category.user = request.user
@@ -136,7 +136,7 @@ class CreateCostCategory(LoginRequiredMixin, View):
                           {'category': new_category})
         else:
             cost_category = models.CostCategory.objects.get(pk=costcat_id)
-            cost_category_form = forms.CostCategoryForm(request.POST, instance=cost_category, files=request.FILES)
+            cost_category_form = forms.CostCategoryForm(request.user, request.POST, instance=cost_category, files=request.FILES)
             if cost_category_form.is_valid():
                 new_category = cost_category_form.save(commit=False)
                 new_category.user = request.user
@@ -251,7 +251,7 @@ class Cost(LoginRequiredMixin, View):
 
     def post(self, request, cost_id=None):
         if not cost_id:
-            cost_form = forms.CostForm(request.POST)
+            cost_form = forms.CostForm(request.user, request.POST)
             if cost_form.is_valid():
                 new_cost = cost_form.save(commit=False)
                 new_cost.user = request.user
@@ -263,7 +263,7 @@ class Cost(LoginRequiredMixin, View):
             old_value = cost.value
             old_currency = cost.currency
             old_account = cost.account
-            cost_form = forms.CostForm(request.POST, instance=cost)
+            cost_form = forms.CostForm(request.user, request.POST, instance=cost)
             if cost_form.is_valid():
                 new_cost = cost_form.save(commit=False)
                 new_cost.user = request.user
@@ -314,7 +314,7 @@ class Income(LoginRequiredMixin, View):
 
     def post(self, request, income_id=None):
         if not income_id:
-            income_form = forms.IncomeForm(request.POST)
+            income_form = forms.IncomeForm(request.user, request.POST)
             if income_form.is_valid():
                 new_income = income_form.save(commit=False)
                 new_income.user = request.user
@@ -326,7 +326,7 @@ class Income(LoginRequiredMixin, View):
             old_value = income.value
             old_currency = income.currency
             old_account = income.account
-            income_form = forms.IncomeForm(request.POST, instance=income)
+            income_form = forms.IncomeForm(request.user, request.POST, instance=income)
             if income_form.is_valid():
                 new_income = income_form.save(commit=False)
                 new_income.user = request.user
@@ -373,7 +373,7 @@ class TransferCreate(LoginRequiredMixin, View):
                       {'form': transfer_form})
 
     def post(self, request):
-        transfer_form = forms.TransferForm(request.POST)
+        transfer_form = forms.TransferForm(request.user, request.POST)
         if transfer_form.is_valid():
             new_transfer = transfer_form.save(commit=False)
             new_transfer.user = request.user
@@ -426,7 +426,7 @@ def register(request):
 
 def edit_image(src):
     im = Image.open(src)
-    ratio = max(im.size) // ICON_SIZE
-    new_size = (size // ratio for size in im.size)
+    ratio = max(im.size) / ICON_SIZE
+    new_size = (round(size / ratio) for size in im.size)
     im = im.resize(new_size)
-    im.save(src, 'JPEG', quality=100)
+    im.save(src, quality=100)

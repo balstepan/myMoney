@@ -21,6 +21,9 @@ class Account(models.Model):
                              related_name='accounts')
     image = models.ImageField(upload_to="icons/", null=True, blank=True)
 
+    class Meta:
+        unique_together = (('user', 'slug'),)
+
     def __str__(self):
         return self.name
 
