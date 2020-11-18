@@ -7,6 +7,7 @@ Category {{ category.name }}
 {% block content %}
     <div class="d-flex align-items-center p-3 my-3 text-black bg-purple rounded shadow-sm">
         <div class="lh-100">
+          {% if category.image %}<img src="{{ category.image.url }}">{% endif %}
           <h4 class="mb-0 text-black lh-100">{{ category.name }}</h4>
         </div>
     </div>

@@ -1,3 +1,4 @@
+import os
 from datetime import datetime, timedelta
 
 from django.shortcuts import render, get_object_or_404, redirect
@@ -6,10 +7,15 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from pytils.translit import slugify
 
+from PIL import Image
+
 from . import models
 from . import forms
 from . import rates
-from myMoney.settings import DEFAULT_ACCOUNTS, DEFAULT_COST_CATEGORIES, DEFAULT_INCOME_CATEGORIES, DEFAULT_ACCOUNTS_ICONS
+from myMoney.settings import (
+    DEFAULT_ACCOUNTS, DEFAULT_COST_CATEGORIES, DEFAULT_INCOME_CATEGORIES,
+    DEFAULT_ACCOUNTS_ICONS, DEFAULT_INCOME_ICONS, DEFAULT_COST_ICONS,
+    ICON_SIZE)
 
 class AllAccounts(LoginRequiredMixin, View):
     def get(self, request):
@@ -35,14 +41,17 @@ class AccountDetail(LoginRequiredMixin, View):
         if slug:
             account = models.Account.objects.get(user=get_object_or_404(models.User, pk=user_id),
                                                  slug=slug)
-            account_form = forms.AccountForm(request.POST, instance=account)
+            account_form = forms.AccountForm(request.POST, instance=account, files=request.FILES)
+            if not account_form['image']:
+                account_form['image'] = account.image.name
         else:
-            account_form = forms.AccountForm(request.POST)
+            account_form = forms.AccountForm(request.POST, files=request.FILES)
         if account_form.is_valid():
             new_account = account_form.save(commit=False)
             new_account.user = request.user
             new_account.slug = slugify(new_account.name)
             new_account.save()
+            edit_image(new_account.image.path)
         return redirect('wallet:all_accounts')
 
 
@@ -115,23 +124,25 @@ class CreateCostCategory(LoginRequiredMixin, View):
 
     def post(self, request, costcat_id=None):
         if not costcat_id:
-            cost_category_form = forms.CostCategoryForm(request.POST)
+            cost_category_form = forms.CostCategoryForm(request.POST, files=request.FILES)
             if cost_category_form.is_valid():
                 new_category = cost_category_form.save(commit=False)
                 new_category.user = request.user
                 new_category.slug = slugify(new_category.name)
                 new_category.save()
+                edit_image(new_category.image.path)
                 return render(request,
                           'costCategories/costcategory_detail.html',
                           {'category': new_category})
         else:
             cost_category = models.CostCategory.objects.get(pk=costcat_id)
-            cost_category_form = forms.CostCategoryForm(request.POST, instance=cost_category)
+            cost_category_form = forms.CostCategoryForm(request.POST, instance=cost_category, files=request.FILES)
             if cost_category_form.is_valid():
                 new_category = cost_category_form.save(commit=False)
                 new_category.user = request.user
                 new_category.slug = slugify(new_category.name)
                 new_category.save()
+                edit_image(new_category.image.path)
                 return redirect(new_category)
 
 
@@ -205,23 +216,25 @@ class CreateIncomeCategory(LoginRequiredMixin, View):
 
     def post(self, request, incomecat_id=None):
         if not incomecat_id:
-            income_category_form = forms.IncomeCategoryForm(request.POST)
+            income_category_form = forms.IncomeCategoryForm(request.POST, files=request.FILES)
             if income_category_form.is_valid():
                 new_category = income_category_form.save(commit=False)
                 new_category.user = request.user
                 new_category.slug = slugify(new_category.name)
                 new_category.save()
+                edit_image(new_category.image.path)
                 return render(request,
                               'incomeCategories/incomecategory_detail.html',
                               {'category': new_category})
         else:
             income_category = models.IncomeCategory.objects.get(pk=incomecat_id)
-            income_category_form = forms.IncomeCategoryForm(request.POST, instance=income_category)
+            income_category_form = forms.IncomeCategoryForm(request.POST, instance=income_category, files=request.FILES)
             if income_category_form.is_valid():
                 new_category = income_category_form.save(commit=False)
                 new_category.user = request.user
                 new_category.slug = slugify(new_category.name)
                 new_category.save()
+                edit_image(new_category.image.path)
                 return redirect(new_category)
 
 
@@ -381,17 +394,19 @@ def register(request):
                 user_form.cleaned_data['password'],
             )
             new_user.save()
-            for cat in DEFAULT_COST_CATEGORIES:
+            for cat, img_src in zip(DEFAULT_COST_CATEGORIES, DEFAULT_COST_ICONS):
                 models.CostCategory.objects.create(
                     name=cat,
                     user=new_user,
-                    slug=slugify(cat)
+                    slug=slugify(cat),
+                    image=img_src
                 )
-            for cat in DEFAULT_INCOME_CATEGORIES:
+            for cat, img_src in zip(DEFAULT_INCOME_CATEGORIES, DEFAULT_INCOME_ICONS):
                 models.IncomeCategory.objects.create(
                     name=cat,
                     user=new_user,
-                    slug=slugify(cat)
+                    slug=slugify(cat),
+                    image=img_src
                 )
             for acc, img_src in zip(DEFAULT_ACCOUNTS, DEFAULT_ACCOUNTS_ICONS):
                 new_acc = models.Account(
@@ -407,3 +422,11 @@ def register(request):
     else:
         user_form = forms.UserRegistrationForm()
     return render(request, 'registration/registration.html', {'form': user_form})
+
+
+def edit_image(src):
+    im = Image.open(src)
+    ratio = max(im.size) // ICON_SIZE
+    new_size = (size // ratio for size in im.size)
+    im = im.resize(new_size)
+    im.save(src, 'JPEG', quality=100)

@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
-from django.utils import timezone
 
 CURRENCIES = (
     ('BYN', 'Belarus Ruble'),
@@ -43,7 +42,7 @@ class CostCategory(models.Model):
                                default=None,
                                null=True,
                                blank=True)
-    image = models.ImageField(null=True, blank=True)
+    image = models.ImageField(upload_to="icons/", null=True, blank=True)
 
     class Meta:
         unique_together = (('user', 'slug'),)
@@ -92,7 +91,7 @@ class IncomeCategory(models.Model):
                              on_delete=models.CASCADE,
                              related_name='income_categories')
     slug = models.SlugField(max_length=80)
-    image = models.ImageField(null=True, blank=True)
+    image = models.ImageField(upload_to="icons/", null=True, blank=True)
 
     class Meta:
         unique_together = (('user', 'slug'),)

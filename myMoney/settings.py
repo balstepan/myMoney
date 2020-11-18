@@ -140,3 +140,9 @@ DEFAULT_INCOME_CATEGORIES = ('Salary', 'Deposits', 'Savings')
 DEFAULT_ACCOUNTS = ('Cash', 'Card')
 
 DEFAULT_ACCOUNTS_ICONS = ('cash.png', 'card.png')
+DEFAULT_INCOME_ICONS = ('salary.png', 'deposits.png', 'savings.png')
+DEFAULT_COST_ICONS = ('home.png', 'car.png', 'food.png', 'hygiene.png',
+                      'health.png', 'entertainment.png', 'clothes.png',
+                      'pets.png', 'gifts.png', 'bills.png', 'transport.png')
+
+ICON_SIZE = 64
