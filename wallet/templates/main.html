@@ -6,7 +6,7 @@ Main page
 
 {% block content %}
     <div class="row">
-    <div class="my-3 col-6 p-3 bg-white rounded shadow-sm">
+    <div class="my-3 col-6 p-4 bg-white rounded shadow-sm">
     <h4 class="border-bottom border-gray pb-2 mb-0">Cost categories</h4>
     {% for cat, percent in categories %}
     <div class="row border-bottom border-gray">
@@ -25,22 +25,22 @@ Main page
     </div>
     {% endfor %}
     </div>
-    <div class="my-3 col-6 p-3 bg-white rounded shadow-sm">
+    <div class="my-3 col-6 p-4 bg-white rounded shadow-sm">
         <h4 class="pb-2 mb-0">Balance</h4>
         <div class="media pt-4 border-bottom border-gray">
             <p class="media-body pb-3 mb-0 lh-125 ">
             <strong class="d-block text-gray-dark">{{ balance }} BYN</strong>
             </p>
         </div>
-        <h4 class="pb-2 mt-2">All costs</h4>
+        <h4 class="pb-2 mt-2 text-danger">All costs</h4>
         <div class="media pt-4 border-bottom border-gray">
-            <p class="media-body pb-3 mb-0 lh-125 ">
+            <p class="media-body pb-3 mb-0 lh-125 text-danger">
             <strong class="d-block text-gray-dark">{{ costs_sum }} BYN</strong>
             </p>
         </div>
-        <h4 class="pb-2 mt-2">All incomes</h4>
+        <h4 class="pb-2 mt-2 text-success">All incomes</h4>
         <div class="media pt-4 border-bottom border-gray">
-            <p class="media-body pb-3 mb-0 lh-125 ">
+            <p class="media-body pb-3 mb-0 lh-125 text-success">
             <strong class="d-block text-gray-dark">{{ incomes_sum }} BYN</strong>
             </p>
         </div>
