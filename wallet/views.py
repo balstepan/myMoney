@@ -1,6 +1,6 @@
-import os
 from datetime import datetime, timedelta
 
+from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -72,6 +72,8 @@ class AccountDetail(LoginRequiredMixin, View):
         if slug:
             account = get_object_or_404(models.Account, slug=slug,
                                         user=get_object_or_404(models.User, pk=user_id))
+            if not check_user(user_id, request.user):
+                return redirect('wallet:access_denied')
             account_form = forms.AccountForm(instance=account)
         else:
             account_form = forms.AccountForm()
@@ -83,6 +85,8 @@ class AccountDetail(LoginRequiredMixin, View):
         if slug:
             account = models.Account.objects.get(user=get_object_or_404(models.User, pk=user_id),
                                                  slug=slug)
+            if not check_user(user_id, request.user):
+                return redirect('wallet:access_denied')
             account_form = forms.AccountForm(request.POST, instance=account, files=request.FILES)
             if not account_form['image']:
                 account_form['image'] = account.image.name
@@ -101,7 +105,8 @@ class AccountDetail(LoginRequiredMixin, View):
 @login_required
 def account_delete(request, acc_id):
     account = get_object_or_404(models.Account, id=acc_id)
-
+    if not check_user(account.user.id, request.user):
+        return redirect('wallet:access_denied')
     if request.method == "POST":
         account.delete()
         return redirect("wallet:all_accounts")
@@ -137,6 +142,8 @@ class CostCategory(LoginRequiredMixin, View):
     def get(self, request, user_id, slug, days=30):
         category = get_object_or_404(models.CostCategory, slug=slug,
                                      user=get_object_or_404(models.User, pk=user_id))
+        if not check_user(user_id, request.user):
+            return redirect('wallet:access_denied')
         children = category.children.all()
         costs = category.costs.filter(created_at__gt=datetime.now()-timedelta(days=days)).order_by('-created_at')
         return render(request,
@@ -150,6 +157,8 @@ class CreateCostCategory(LoginRequiredMixin, View):
     def get(self, request, costcat_id=None):
         if costcat_id:
             cost_category = models.CostCategory.objects.get(pk=costcat_id)
+            if not check_user(cost_category.user.id, request.user):
+                return redirect('wallet:access_denied')
             cost_category_form = forms.CostCategoryForm(instance=cost_category, user=request.user)
         else:
             cost_category_form = forms.CostCategoryForm(user=request.user)
@@ -172,6 +181,8 @@ class CreateCostCategory(LoginRequiredMixin, View):
                           {'category': new_category})
         else:
             cost_category = models.CostCategory.objects.get(pk=costcat_id)
+            if not check_user(cost_category.user.id, request.user):
+                return redirect('wallet:access_denied')
             cost_category_form = forms.CostCategoryForm(request.user, request.POST, instance=cost_category, files=request.FILES)
             if cost_category_form.is_valid():
                 new_category = cost_category_form.save(commit=False)
@@ -186,7 +197,8 @@ class CreateCostCategory(LoginRequiredMixin, View):
 @login_required()
 def cost_category_delete(request, costcat_id):
     cost_category = get_object_or_404(models.CostCategory, id=costcat_id)
-
+    if not check_user(cost_category.user.id, request.user):
+        return redirect('wallet:access_denied')
     if request.method == "POST":
         cost_category.delete()
         return redirect("wallet:all_cost_categories")
@@ -219,6 +231,8 @@ class IncomeCategory(LoginRequiredMixin, View):
     def get(self, request, user_id, slug, days=30):
         category = get_object_or_404(models.IncomeCategory, slug=slug,
                                      user=get_object_or_404(models.User, pk=user_id))
+        if not check_user(user_id, request.user):
+            return redirect('wallet:access_denied')
         incomes = category.incomes.filter(created_at__gt=datetime.now()-timedelta(days=days)).order_by('-created_at')
         return render(request,
                       'incomeCategories/incomecategory_detail.html',
@@ -229,7 +243,8 @@ class IncomeCategory(LoginRequiredMixin, View):
 @login_required
 def income_category_delete(request, incomecat_id):
     income_category = get_object_or_404(models.IncomeCategory, id=incomecat_id)
-
+    if not check_user(income_category.user.id, request.user):
+        return redirect('wallet:access_denied')
     if request.method == "POST":
         income_category.delete()
         return redirect("wallet:all_income_categories")
@@ -244,6 +259,8 @@ class CreateIncomeCategory(LoginRequiredMixin, View):
     def get(self, request, incomecat_id=None):
         if incomecat_id:
             income_category = models.IncomeCategory.objects.get(pk=incomecat_id)
+            if not check_user(income_category.user.id, request.user):
+                return redirect('wallet:access_denied')
             income_category_form = forms.IncomeCategoryForm(instance=income_category)
         else:
             income_category_form = forms.IncomeCategoryForm()
@@ -266,6 +283,8 @@ class CreateIncomeCategory(LoginRequiredMixin, View):
                               {'category': new_category})
         else:
             income_category = models.IncomeCategory.objects.get(pk=incomecat_id)
+            if not check_user(income_category.user.id, request.user):
+                return redirect('wallet:access_denied')
             income_category_form = forms.IncomeCategoryForm(request.POST, instance=income_category, files=request.FILES)
             if income_category_form.is_valid():
                 new_category = income_category_form.save(commit=False)
@@ -281,6 +300,8 @@ class Cost(LoginRequiredMixin, View):
     def get(self, request, cost_id=None):
         if cost_id:
             cost = models.Cost.objects.get(pk=cost_id)
+            if not check_user(cost.user.id, request.user):
+                return redirect('wallet:access_denied')
             cost_form = forms.CostForm(instance=cost, user=request.user)
         else:
             cost_form = forms.CostForm(user=request.user)
@@ -299,6 +320,8 @@ class Cost(LoginRequiredMixin, View):
                 new_cost.account.save()
         else:
             cost = models.Cost.objects.get(pk=cost_id)
+            if not check_user(cost.user.id, request.user):
+                return redirect('wallet:access_denied')
             old_value = cost.value
             old_currency = cost.currency
             old_account = cost.account
@@ -325,7 +348,8 @@ class Cost(LoginRequiredMixin, View):
 @login_required
 def cost_delete(request, cost_id):
     cost = get_object_or_404(models.Cost, id=cost_id)
-
+    if not check_user(cost.user.id, request.user):
+        return redirect('wallet:access_denied')
     if request.method == "POST":
         cost.account.balance += rates.get_byn(cost.value, cost.currency)
         cost.account.save()
@@ -344,6 +368,8 @@ class Income(LoginRequiredMixin, View):
     def get(self, request, income_id=None):
         if income_id:
             income = models.Income.objects.get(pk=income_id)
+            if not check_user(income.user.id, request.user):
+                return redirect('wallet:access_denied')
             income_form = forms.IncomeForm(instance=income, user=request.user)
         else:
             income_form = forms.IncomeForm(user=request.user)
@@ -362,6 +388,8 @@ class Income(LoginRequiredMixin, View):
                 new_income.account.save()
         else:
             income = models.Income.objects.get(pk=income_id)
+            if not check_user(income.user.id, request.user):
+                return redirect('wallet:access_denied')
             old_value = income.value
             old_currency = income.currency
             old_account = income.account
@@ -388,7 +416,8 @@ class Income(LoginRequiredMixin, View):
 @login_required
 def income_delete(request, income_id):
     income = get_object_or_404(models.Income, id=income_id)
-
+    if not check_user(income.user.id, request.user):
+        return redirect('wallet:access_denied')
     if request.method == "POST":
         if income.account:
             income.account.balance -= rates.get_byn(income.value, income.currency)
@@ -478,3 +507,17 @@ def edit_image(src):
     new_size = (round(size / ratio) for size in im.size)
     im = im.resize(new_size)
     im.save(src, quality=100)
+
+
+def check_user(user_id, request_user):
+    if user_id is None:
+        return True
+    user = get_object_or_404(User, id=user_id)
+    if user != request_user:
+        return False
+    else:
+        return True
+
+
+def access_denied(request):
+    return render(request, 'access_denied.html')
